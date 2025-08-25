@@ -2,23 +2,53 @@ import dotenv from "dotenv";
 import path from "path";
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 import { prisma } from "@repo/db";
-import { betterAuth } from "better-auth";
+import { betterAuth, BetterAuthOptions } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { customSession } from "better-auth/plugins";
 
-export const auth = betterAuth({
- baseURL: "http://localhost:3001",
+
+const options = {
+  baseURL: "http://localhost:3001",
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  user: {
+    additionalFields: {
+      firstLogin: {
+        type: "boolean",
+        input: false,
+        defaultValue: true
+      }
+    }
+  },
   emailAndPassword: {
     enabled: true,
   },
   socialProviders: {
     github: {
-      clientId: process.env.GITHUB_CLIENT_ID as string, 
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string, 
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     },
   },
+  plugins: [
+
+  ]
+} satisfies BetterAuthOptions;
+
+
+
+export const auth = betterAuth({
+  ...options,
+  plugins: [
+    ...(options.plugins ?? []),
+    customSession(async ({ user, session }) => {
+      return {
+        user,
+        session
+      }
+    }, options),
+  ]
 });
 
+type Session = typeof auth.$Infer.Session
 console.log("Auth instance created successfully");

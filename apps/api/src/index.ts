@@ -28,6 +28,7 @@ app.get("/", async (_req, res) => {
     const user = await prisma.user.findFirst()
     res.json({ message: "Hello World", user: user?.name ?? "No user found" });
 });
+
 app.get("/api/me", async (req, res) => {
     const session = await auth.api.getSession({
         headers: fromNodeHeaders(req.headers),
