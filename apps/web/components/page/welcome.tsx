@@ -1,10 +1,10 @@
 "use client"
-import { ModeToggle } from "@workspace/ui/components/theme"
 import { GitGraph } from "lucide-react"
 import { motion } from "motion/react"
 import Link from "next/link"
 
 export const Welcome = () => {
+
     return <div className="dark:text-white dark:bg-black bg-white text-black h-screen w-full flex flex-col items-center justify-center">
         <div className="h-80 w-[400px] md:w-[500px] flex flex-col items-center justify-center">
             <motion.div

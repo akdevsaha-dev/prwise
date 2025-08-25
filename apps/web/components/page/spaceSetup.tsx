@@ -1,12 +1,12 @@
 "use client"
 import { useState } from "react"
-import {motion} from "motion/react"
-export const WorkSpaceSetup = () => {
+import { motion } from "motion/react"
+
+export const WorkSpaceSetup = ({email}: {email: string}) => {
     const [nameValue, setNameValue] = useState("")
     const [urlValue, setUrlValue] = useState("")
     const [nameTouched, setNameTouched] = useState(false)
     const [urlTouched, setUrlTouched] = useState(false)
-
     return <div className="h-screen dark:bg-black bg-white text-black dark:text-white flex flex-col w-full ">
         <div className="h-20 flex items-center text-sm px-10 justify-between ">
             <div className="text-neutral-500 px-2 rounded-md py-[2px] hover:text-white hover:bg-neutral-400 dark:hover:bg-neutral-900">
@@ -14,23 +14,23 @@ export const WorkSpaceSetup = () => {
             </div>
             <div className="px-3 rounded-md py-2 hover:text-white text-neutral-500 hover:bg-neutral-400 dark:hover:bg-neutral-900">
                 <div >Logged in as</div>
-                <div className="text-xs font-semibold dark:text-white text-neutral-700">akdevsaha2003@gmail.com</div>
+                <div className="text-xs font-semibold dark:text-white text-neutral-700">{email}</div>
             </div>
         </div>
         <div className="flex-1 flex flex-col mt-14 items-center text-black dark:text-white ">
-            <div className="md:w-[500px] w-[400px] h-[60vh] shadow-2xl shadow-neutral-200">
+            <div className="md:w-[500px] dark:bg-neutral-950 bg-white/8 w-[400px] h-[60vh] shadow-2xl dark:shadow-none shadow-neutral-200">
                 <div className="text-2xl font-semibold text-center">
                     Create a new workspace
                 </div>
                 <div className="text-neutral-400 mt-5 text-center">
                     workspace are shared environment where team can work on projectscycles and issues
                 </div>
-                <div className="bg-white/8 mt-6 w-full h-80 px-4 flex flex-col justify-center rounded-md">
+                <div className=" mt-6 w-full h-80 px-4 flex flex-col justify-center rounded-md">
                     <div className="text-sm">
                         Workspace Name
                     </div>
                     <input
-                        className="focus:outline-none text-sm border-[1px] dark:focus:border-neutral-600 focus:border-neutral-300 border-neutral-200 dark:border-neutral-800 text-neutral-400 w-full px-4 py-4 mt-2 rounded-md"
+                        className="focus:outline-none text-sm border-[1px] dark:focus:border-neutral-600 focus:border-neutral-300 border-neutral-200 dark:border-neutral-800 text-neutral-500 w-full px-4 py-4 mt-2 rounded-md"
                         value={nameValue}
                         onChange={(e) => setNameValue(e.target.value)}
                         onBlur={() => setNameTouched(true)}
@@ -42,7 +42,7 @@ export const WorkSpaceSetup = () => {
                         Workspace URL
                     </div>
                     <div className="flex mt-2 border-[1px] border-neutral-200 dark:border-neutral-800 dark:focus-within:border-neutral-600 focus-within:border-neutral-300 rounded-md overflow-hidden">
-                        <div className="dark:bg-neutral-800 bg-neutral-200 px-3 py-3 text-neutral-400 text-sm flex items-center">
+                        <div className="dark:bg-neutral-800 bg-neutral-200 px-3 py-3 text-neutral-500 text-sm flex items-center">
                             prwise.app/
                         </div>
                         <input
@@ -61,8 +61,9 @@ export const WorkSpaceSetup = () => {
                     </div>
                 </div>
             </div>
-            <button className="text-white h-12 rounded-md flex items-center justify-center w-[350px] text-center bg-[#5c4cd8] mt-5 text-sm hover:bg-[#8979ff]">
-                Create workspace
+            <button
+                className="text-white h-12 rounded-md flex items-center justify-center w-[350px] text-center bg-[#5c4cd8] mt-5 text-sm hover:bg-[#8979ff] disabled:opacity-50 disabled:cursor-not-allowed"
+            >Create workspace
             </button>
         </div>
         <motion.div
