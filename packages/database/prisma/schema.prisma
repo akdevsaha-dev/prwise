@@ -15,7 +15,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String      @id
   name          String
   email         String
   emailVerified Boolean
@@ -24,9 +24,28 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
-  firstLogin    Boolean @default(true)
+  firstLogin    Boolean     @default(true)
+  workspace     Workspace[]
+
   @@unique([email])
   @@map("user")
+}
+
+enum Plan {
+  FREE
+  PAID
+}
+
+model Workspace {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id])
+
+  @@map("workspace")
 }
 
 model Session {
