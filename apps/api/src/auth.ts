@@ -8,7 +8,11 @@ import { customSession } from "better-auth/plugins";
 
 
 const options = {
-  baseURL: "http://localhost:3001",
+  baseURL: "http://localhost:3000",
+  trustedOrigins: [
+    "http://localhost:3000", 
+    "http://localhost:3001", 
+  ],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -29,6 +33,11 @@ const options = {
       clientId: process.env.GITHUB_CLIENT_ID as string,
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     },
+    google: { 
+      prompt: "select_account", 
+      clientId: process.env.GOOGLE_CLIENT_ID as string, 
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string, 
+  }, 
   },
   plugins: [
 
@@ -50,5 +59,5 @@ export const auth = betterAuth({
   ]
 });
 
-type Session = typeof auth.$Infer.Session
+export type Session = typeof auth.$Infer.Session
 console.log("Auth instance created successfully");

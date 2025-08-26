@@ -3,8 +3,8 @@ import path from "path";
 dotenv.config({ path: path.resolve(process.cwd(), '.env') })
 import express from "express";
 import ngrok from "@ngrok/ngrok";
-import { prisma } from "@repo/db"
 import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
+import onboardRoute from "./routes/onboard.route.js"
 import cors from "cors"
 import { auth } from "./auth.js";
 const app = express();
@@ -20,14 +20,12 @@ app.use(
 );
 
 
-app.all("/api/auth/*", toNodeHandler(auth)); 
+app.all("/api/auth/*", toNodeHandler(auth));
 
 app.use(express.json());
 
-app.get("/", async (_req, res) => {
-    const user = await prisma.user.findFirst()
-    res.json({ message: "Hello World", user: user?.name ?? "No user found" });
-});
+
+app.use("api/v1/", onboardRoute)
 
 app.get("/api/me", async (req, res) => {
     const session = await auth.api.getSession({
@@ -35,6 +33,7 @@ app.get("/api/me", async (req, res) => {
     });
     return res.json(session);
 });
+
 
 app.listen(port, async () => {
     console.log(`Server running on http://localhost:${port}`);
