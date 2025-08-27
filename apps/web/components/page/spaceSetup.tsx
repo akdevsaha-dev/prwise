@@ -1,17 +1,41 @@
 "use client"
 import { useState } from "react"
 import { motion } from "motion/react"
+import { handleWorkspaceSetup } from "@/lib/actions"
+import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
+import { authClient } from "@/lib/auth-client"
 
-export const WorkSpaceSetup = ({email}: {email: string}) => {
-    const [nameValue, setNameValue] = useState("")
-    const [urlValue, setUrlValue] = useState("")
+export const WorkSpaceSetup = ({ email }: { email: string }) => {
+    const [workSpace_name, setworkSpace_name] = useState("")
+    const [workSpace_Url, setworkSpace_Url] = useState("")
     const [nameTouched, setNameTouched] = useState(false)
     const [urlTouched, setUrlTouched] = useState(false)
+    const router = useRouter()
+
+    async function handleSubmit() {
+        const res = await handleWorkspaceSetup({ workSpace_name, workSpace_Url })
+        if (res.success) {
+            router.push("/onboarding/set-theme")
+        } else {
+            toast.error("Workspace setup failed")
+        }
+    }
+
     return <div className="h-screen dark:bg-black bg-white text-black dark:text-white flex flex-col w-full ">
         <div className="h-20 flex items-center text-sm px-10 justify-between ">
-            <div className="text-neutral-500 px-2 rounded-md py-[2px] hover:text-white hover:bg-neutral-400 dark:hover:bg-neutral-900">
+            <button onClick={async () => {
+                try {
+                    await authClient.signOut();
+                    router.push("/signin");
+                } catch (err) {
+                    console.error("Logout failed:", err);
+                    toast.error("Logout failed");
+                }
+            }}
+                className="text-neutral-500 px-2 rounded-md py-[2px] hover:text-white hover:bg-neutral-400 dark:hover:bg-neutral-900">
                 Log out
-            </div>
+            </button>
             <div className="px-3 rounded-md py-2 hover:text-white text-neutral-500 hover:bg-neutral-400 dark:hover:bg-neutral-900">
                 <div >Logged in as</div>
                 <div className="text-xs font-semibold dark:text-white text-neutral-700">{email}</div>
@@ -31,11 +55,11 @@ export const WorkSpaceSetup = ({email}: {email: string}) => {
                     </div>
                     <input
                         className="focus:outline-none text-sm border-[1px] dark:focus:border-neutral-600 focus:border-neutral-300 border-neutral-200 dark:border-neutral-800 text-neutral-500 w-full px-4 py-4 mt-2 rounded-md"
-                        value={nameValue}
-                        onChange={(e) => setNameValue(e.target.value)}
+                        value={workSpace_name}
+                        onChange={(e) => setworkSpace_name(e.target.value)}
                         onBlur={() => setNameTouched(true)}
                     />
-                    {nameTouched && nameValue.trim() === "" && (
+                    {nameTouched && workSpace_name.trim() === "" && (
                         <div className="text-red-500 text-xs mt-1">Required</div>
                     )}
                     <div className="text-sm mt-8">
@@ -48,12 +72,12 @@ export const WorkSpaceSetup = ({email}: {email: string}) => {
                         <input
                             className="focus:outline-none bg-transparent text-neutral-400 text-sm flex-1 px-2 py-4"
                             placeholder="your-workspace"
-                            value={urlValue}
-                            onChange={(e) => setUrlValue(e.target.value)}
+                            value={workSpace_Url}
+                            onChange={(e) => setworkSpace_Url(e.target.value)}
                             onBlur={() => setUrlTouched(true)}
                         />
                     </div>
-                    {urlTouched && urlValue.trim() === "" && (
+                    {urlTouched && workSpace_Url.trim() === "" && (
                         <div className="text-red-500 text-xs mt-1">Required</div>
                     )}
                     <div className="mt-10 text-neutral-400 text-sm">
@@ -62,6 +86,7 @@ export const WorkSpaceSetup = ({email}: {email: string}) => {
                 </div>
             </div>
             <button
+                onClick={handleSubmit}
                 className="text-white h-12 rounded-md flex items-center justify-center w-[350px] text-center bg-[#5c4cd8] mt-5 text-sm hover:bg-[#8979ff] disabled:opacity-50 disabled:cursor-not-allowed"
             >Create workspace
             </button>

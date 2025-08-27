@@ -25,7 +25,7 @@ app.all("/api/auth/*", toNodeHandler(auth));
 app.use(express.json());
 
 
-app.use("api/v1/", onboardRoute)
+app.use("/api/v1", onboardRoute)
 
 app.get("/api/me", async (req, res) => {
     const session = await auth.api.getSession({

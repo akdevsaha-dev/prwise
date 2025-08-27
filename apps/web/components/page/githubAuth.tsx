@@ -2,6 +2,7 @@
 import { Check } from "lucide-react"
 import Image from "next/image"
 import { motion } from "motion/react"
+import Link from "next/link"
 export const GithubAuth = () => {
     return <motion.div
         className="h-screen w-full dark:text-white text-black dark:bg-black bg-white flex items-center justify-center transition-colors duration-500"
@@ -77,7 +78,9 @@ export const GithubAuth = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
             >
-                Authenticate with GitHub
+                <Link href={"https://github.com/apps/prwise-ai/installations/new"}>
+                    Authenticate with GitHub
+                </Link>
             </motion.div>
         </div>
 

@@ -2,6 +2,7 @@ import { prisma } from "@repo/db"
 import { Request, Response } from "express"
 import { auth, Session } from "../auth.js";
 import { fromNodeHeaders } from "better-auth/node";
+import { success } from "better-auth";
 
 export const workspaceSetup = async (req: Request, res: Response) => {
     const { workSpace_name, workSpace_Url } = req.body
@@ -23,6 +24,7 @@ export const workspaceSetup = async (req: Request, res: Response) => {
             }
         })
         return res.status(201).json({
+            success: true,
             message: "Workspace created successfully"
         })
 

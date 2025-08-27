@@ -3,17 +3,16 @@ import { useTheme } from "next-themes"
 import { motion, AnimatePresence } from "motion/react"
 import { useState } from "react"
 import { Moon, Sun } from "lucide-react"
-
+import { useRouter } from "next/navigation"
 
 export const SetTheme = () => {
     const { setTheme } = useTheme()
     const [isAnimating, setIsAnimating] = useState(false)
     const [animationDirection, setAnimationDirection] = useState<'light' | 'dark'>('light')
-
+    const router = useRouter()
     const handleThemeChange = (theme: 'light' | 'dark') => {
         setAnimationDirection(theme)
         setIsAnimating(true)
-
         setTimeout(() => {
             setTheme(theme)
         }, 200)
@@ -96,7 +95,11 @@ export const SetTheme = () => {
                     </div>
                 </motion.button>
             </motion.div>
-            <div
+            <button
+                onClick={() => {
+                    console.log("triggered")
+                    router.push("/onboarding/github-install")
+                }}
                 className="
     w-[300px] text-center py-3 rounded-md mt-10
     text-neutral-400
@@ -106,7 +109,7 @@ export const SetTheme = () => {
   "
             >
                 Continue
-            </div>
+            </button>
         </div>
         <motion.div
             initial={{ opacity: 0, y: 20 }}
