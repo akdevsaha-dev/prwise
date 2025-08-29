@@ -2,7 +2,6 @@ import { prisma } from "@repo/db"
 import { Request, Response } from "express"
 import { auth, Session } from "../auth.js";
 import { fromNodeHeaders } from "better-auth/node";
-import { success } from "better-auth";
 
 export const workspaceSetup = async (req: Request, res: Response) => {
     const { workSpace_name, workSpace_Url } = req.body
@@ -11,23 +10,18 @@ export const workspaceSetup = async (req: Request, res: Response) => {
             headers: fromNodeHeaders(req.headers),
         }) as Session | null;
         if (!session) {
-            return res.status(401).json({
-                message: "unauthorized"
-            })
+            return res.redirect(`${process.env.FRONTEND_URL}/signin`)
         }
         const ownerId = session.user.id
-        await prisma.workspace.create({
+        const workspace = await prisma.workspace.create({
             data: {
                 name: workSpace_name,
                 slug: workSpace_Url,
                 ownerId
             }
         })
-        return res.status(201).json({
-            success: true,
-            message: "Workspace created successfully"
-        })
-
+        //TODO: check workspace count if first workspace return onboard url or return diff url
+        return res.status(201).redirect(`${process.env.FRONTEND_URL}/onboarding/${workspace.id}`)
     }
     catch (error) {
         console.error("Error creating workspace", error)
