@@ -36,7 +36,7 @@ export const SignIn = () => {
     })
   }
 
-  return <div className="h-screen text-black dark:text-white w-full flex justify-center items-center">
+  return <div className="h-screen text-black dark:bg-black bg-white dark:text-white w-full flex justify-center items-center">
     <motion.div
       initial={{ opacity: 0, y: -80 }}
       animate={{ opacity: 1, y: 0 }}

@@ -14,11 +14,21 @@ export const WorkSpaceSetup = ({ email }: { email: string }) => {
     const router = useRouter()
 
     async function handleSubmit() {
-        const res = await handleWorkspaceSetup({ workSpace_name, workSpace_Url })
-        if (res.success) {
-            router.push("/onboarding/set-theme")
+        setNameTouched(true);
+        setUrlTouched(true);
+
+        if (!workSpace_name.trim() || !workSpace_Url.trim()) {
+            toast.error("Please fill all the required fields");
+            return;
+        }
+        //TODO: complete the url also checl for unique url
+        // const final_workSpace_name = ""
+
+        const res = await handleWorkspaceSetup({ workSpace_name, workSpace_Url });
+        if (res.redirectURL) {
+            router.push(res.redirectURL)
         } else {
-            toast.error("Workspace setup failed")
+            toast.error("Workspace setup failed");
         }
     }
 
@@ -107,7 +117,7 @@ export const WorkSpaceSetup = ({ email }: { email: string }) => {
                         duration: 0.3,
                         type: "spring"
                     }}
-                    className={`w-2 h-2 rounded-full ${index === 1 ? 'bg-[#5c4cd8]' : 'bg-neutral-300 dark:bg-neutral-400'
+                    className={`w-2 h-2 rounded-full ${index === 2 ? 'bg-[#5c4cd8]' : 'bg-neutral-300 dark:bg-neutral-400'
                         }`}
                 />
             ))}

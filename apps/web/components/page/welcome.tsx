@@ -4,7 +4,7 @@ import { motion } from "motion/react"
 import Link from "next/link"
 
 export const Welcome = () => {
-
+    
     return <div className="dark:text-white dark:bg-black bg-white text-black h-screen w-full flex flex-col items-center justify-center">
         <div className="h-80 w-[400px] md:w-[500px] flex flex-col items-center justify-center">
             <motion.div
@@ -49,7 +49,7 @@ export const Welcome = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
             >
-                <Link href={"/onboarding/workspace-setup"} className="text-white h-12 rounded-md flex items-center justify-center w-[350px] text-center bg-[#5c4cd8] mt-5 text-sm hover:bg-[#8979ff] transition-colors duration-200">
+                <Link href={"/onboarding/set-theme"} className="text-white h-12 rounded-md flex items-center justify-center w-[350px] text-center bg-[#5c4cd8] mt-5 text-sm hover:bg-[#8979ff] transition-colors duration-200">
                     Get started
                 </Link>
             </motion.div>

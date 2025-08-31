@@ -3,13 +3,12 @@ import { useTheme } from "next-themes"
 import { motion, AnimatePresence } from "motion/react"
 import { useState } from "react"
 import { Moon, Sun } from "lucide-react"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export const SetTheme = () => {
     const { setTheme } = useTheme()
     const [isAnimating, setIsAnimating] = useState(false)
     const [animationDirection, setAnimationDirection] = useState<'light' | 'dark'>('light')
-    const router = useRouter()
     const handleThemeChange = (theme: 'light' | 'dark') => {
         setAnimationDirection(theme)
         setIsAnimating(true)
@@ -95,11 +94,7 @@ export const SetTheme = () => {
                     </div>
                 </motion.button>
             </motion.div>
-            <button
-                onClick={() => {
-                    console.log("triggered")
-                    router.push("/onboarding/github-install")
-                }}
+            <Link href={"/onboarding/workspace-setup"}
                 className="
     w-[300px] text-center py-3 rounded-md mt-10
     text-neutral-400
@@ -109,7 +104,7 @@ export const SetTheme = () => {
   "
             >
                 Continue
-            </button>
+            </Link>
         </div>
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -127,7 +122,7 @@ export const SetTheme = () => {
                         duration: 0.3,
                         type: "spring"
                     }}
-                    className={`w-2 h-2 rounded-full ${index === 2 ? 'bg-[#5c4cd8]' : 'bg-neutral-300 dark:bg-neutral-400'
+                    className={`w-2 h-2 rounded-full ${index === 1 ? 'bg-[#5c4cd8]' : 'bg-neutral-300 dark:bg-neutral-400'
                         }`}
                 />
             ))}

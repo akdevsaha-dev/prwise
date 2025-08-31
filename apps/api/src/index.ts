@@ -5,6 +5,8 @@ import express from "express";
 import ngrok from "@ngrok/ngrok";
 import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
 import onboardRoute from "./routes/onboard.route.js"
+import workspaceRoute from "./routes/workspace.route.js"
+import githubRoute from "./routes/github.route.js"
 import cors from "cors"
 import { auth } from "./auth.js";
 const app = express();
@@ -25,7 +27,8 @@ app.all("/api/auth/*", toNodeHandler(auth));
 app.use(express.json());
 
 
-app.use("/api/v1", onboardRoute)
+app.use("/api/v1", onboardRoute, workspaceRoute)
+app.use("/api/github", githubRoute)
 
 app.get("/api/me", async (req, res) => {
     const session = await auth.api.getSession({
@@ -41,7 +44,7 @@ app.listen(port, async () => {
     try {
         const listener = await ngrok.connect({
             addr: port,
-            authtoken: process.env.NGROK_AUTHTOKEN, // ✅ explicit token
+            authtoken: process.env.NGROK_AUTHTOKEN,
             domain: "ghoul-ready-moccasin.ngrok-free.app"
         });
 

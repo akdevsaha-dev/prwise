@@ -3,7 +3,9 @@ import { Check } from "lucide-react"
 import Image from "next/image"
 import { motion } from "motion/react"
 import Link from "next/link"
+import { useParams } from "next/navigation"
 export const GithubAuth = () => {
+    const { workspaceId } = useParams()
     return <motion.div
         className="h-screen w-full dark:text-white text-black dark:bg-black bg-white flex items-center justify-center transition-colors duration-500"
         initial={{ opacity: 0 }}
@@ -78,7 +80,7 @@ export const GithubAuth = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
             >
-                <Link href={"https://github.com/apps/prwise-ai/installations/new"}>
+                <Link href={`https://github.com/apps/prwise-ai/installations/new?state=${workspaceId}`}>
                     Authenticate with GitHub
                 </Link>
             </motion.div>

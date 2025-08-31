@@ -27,9 +27,14 @@ export const workspaceSetup = async (req: Request, res: Response) => {
             }
         })
         if (workspaceCount === 0) {
-            return res.status(201).redirect(`${process.env.FRONTEND_URL}/onboarding/${workspace.id}`)
+            return res.status(201).json({
+                redirectURL: `${process.env.FRONTEND_URL}/onboarding/github-install/${workspace.id}`
+            })
+
         } else {
-            return res.status(201).redirect(`${process.env.FRONTEND_URL}/dashboard/${workspace.id}`)
+            return res.status(201).json({
+                redirectURL: `${process.env.FRONTEND_URL}/dashboard/workspace/${workspace.id}`
+            })
         }
     }
     catch (error) {
