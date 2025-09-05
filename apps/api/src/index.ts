@@ -6,6 +6,7 @@ import ngrok from "@ngrok/ngrok";
 import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
 import onboardRoute from "./routes/onboard.route.js"
 import workspaceRoute from "./routes/workspace.route.js"
+import registerAppRoute from "./routes/registerapp.route.js"
 import githubRoute from "./routes/github.route.js"
 import cors from "cors"
 import { auth } from "./auth.js";
@@ -28,7 +29,8 @@ app.use(express.json());
 
 
 app.use("/api/v1", onboardRoute, workspaceRoute)
-app.use("/api/github", githubRoute)
+app.use("/api/github", registerAppRoute)
+app.use("/app/installations", githubRoute)
 
 app.get("/api/me", async (req, res) => {
     const session = await auth.api.getSession({

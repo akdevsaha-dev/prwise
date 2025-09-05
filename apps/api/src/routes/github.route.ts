@@ -1,8 +1,8 @@
 import express from "express"
-import { registerApp } from "../controllers/github.controllers.js"
+import { getInstallationDetails } from "../controllers/github.controllers.js"
 
 const router = express.Router()
 
-router.get("/callback", registerApp)
+router.get("/:workspaceId", getInstallationDetails)
 
-export default router;
+export default router

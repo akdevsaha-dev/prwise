@@ -1,49 +1,40 @@
-import { prisma } from "@repo/db";
+import { Octokit } from "octokit"
+import { generateSecret } from "../lib/generateSecret.js"
 import { Request, Response } from "express"
-import { auth, Session } from "../auth.js";
-import { fromNodeHeaders } from "better-auth/node";
+import { prisma } from "@repo/db";
 
-export const registerApp = async (req: Request, res: Response) => {
+export const getInstallationDetails = async (req: Request, res: Response) => {
     try {
-        const { installation_id, state } = req.query;
-        const workspaceId = state
-
-        if (!installation_id || !workspaceId) {
-            return res.status(400).send("Missing installation_id or workspaceId")
-        }
-        const session = await auth.api.getSession({
-            headers: fromNodeHeaders(req.headers)
-        }) as Session | null
-        if (!session) {
-            return res.redirect(`${process.env.FRONTEND_URL}/signin`)
-        }
-        const existingWorkspace = await prisma.githubAppInstallation.findUnique({
-            where: { workspaceId: String(workspaceId) },
-        });
-
-        await prisma.githubAppInstallation.upsert({
+        const { workspaceId } = req.params;
+        const installation = await prisma.githubAppInstallation.findUnique({
             where: {
-                workspaceId: String(workspaceId)
-            },
-            update: {
-                installationId: installation_id.toString()
-            },
-            create: {
-                workspaceId: String(workspaceId),
-                installationId: installation_id.toString()
+                workspaceId
             }
         })
-        if (!existingWorkspace) {
-            return res.redirect(
-                `${process.env.FRONTEND_URL}/onboarding/success?workspaceId=${workspaceId}&connected=github`
-            );
-        } else {
-            return res.redirect(
-                `${process.env.FRONTEND_URL}/dashboard/workspace/${workspaceId}?connected=github`
-            );
+        if (!installation) {
+            return res.status(404).json({ error: "No GitHub installation found for this workspace" });
         }
-    }
-    catch (error) {
-        res.json(error)
+        const installation_id = installation?.installationId
+        const installationIdNum = parseInt(installation_id, 10)
+        if (isNaN(installationIdNum)) {
+            return res.status(400).json({ error: "Invalid installation ID in DB" });
+        }
+        const jwtToken = generateSecret()
+        const octokit = new Octokit({
+            auth: jwtToken
+        })
+
+        const { data } = await octokit.request('GET /app/installations/{installation_id}', {
+            installation_id: installationIdNum,
+            headers: {
+                'X-GitHub-Api-Version': '2022-11-28'
+            }
+        })
+        console.log(data)
+        res.json(data);
+
+    } catch (error: any) {
+        console.error('Error fetching installation details:', error.response?.data || error.message);
+        res.status(500).json({ error: 'Failed to fetch installation details' });
     }
 }
