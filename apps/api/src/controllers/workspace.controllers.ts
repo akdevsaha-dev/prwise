@@ -19,6 +19,21 @@ export const workspaceSetup = async (req: Request, res: Response) => {
                 ownerId
             }
         })
+        const existing = await prisma.workspace.findUnique({
+            where: {
+                ownerId_name: {
+                    ownerId,
+                    name: workSpace_name
+                }
+            }
+        })
+
+        if (existing) {
+            return res.status(409).json({
+                error: "Workspace with this name already exists"
+            })
+        }
+
         const workspace = await prisma.workspace.create({
             data: {
                 name: workSpace_name,
@@ -28,12 +43,12 @@ export const workspaceSetup = async (req: Request, res: Response) => {
         })
         if (workspaceCount === 0) {
             return res.status(201).json({
-                redirectURL: `${process.env.FRONTEND_URL}/onboarding/github-install/${workspace.id}`
+                redirectURL: `${process.env.FRONTEND_URL}/onboarding/github-install/${workspace.name}/${workspace.id}`
             })
 
         } else {
             return res.status(201).json({
-                redirectURL: `${process.env.FRONTEND_URL}/dashboard/workspace/${workspace.id}`
+                redirectURL: `${process.env.FRONTEND_URL}/dashboard/${workspace.name}/${workspace.id}`
             })
         }
     }

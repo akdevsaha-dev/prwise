@@ -8,6 +8,8 @@ import onboardRoute from "./routes/onboard.route.js"
 import workspaceRoute from "./routes/workspace.route.js"
 import registerAppRoute from "./routes/registerapp.route.js"
 import githubRoute from "./routes/github.route.js"
+import repoRoute from "./routes/repo.route.js"
+import webhookRoute from "./routes/webhooks.route.js"
 import cors from "cors"
 import { auth } from "./auth.js";
 const app = express();
@@ -28,9 +30,10 @@ app.all("/api/auth/*", toNodeHandler(auth));
 app.use(express.json());
 
 
-app.use("/api/v1", onboardRoute, workspaceRoute)
-app.use("/api/github", registerAppRoute)
-app.use("/app/installations", githubRoute)
+app.use("/api/v1", onboardRoute, workspaceRoute, repoRoute)
+app.use("/api/github", registerAppRoute, webhookRoute)
+app.use("/api/app/installations", githubRoute)
+
 
 app.get("/api/me", async (req, res) => {
     const session = await auth.api.getSession({

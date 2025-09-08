@@ -38,3 +38,39 @@ export const getInstallationDetails = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Failed to fetch installation details' });
     }
 }
+
+export const deleteInstallation = async (req: Request, res: Response) => {
+    try {
+        const { workspaceId } = req.params;
+
+        const installation = await prisma.githubAppInstallation.findUnique({
+            where: {
+                workspaceId
+            }
+        })
+        if (!installation) {
+            return res.status(404).json({ error: "No GitHub installation found for this workspace" });
+        }
+        const installtaionId = installation.installationId
+        const installationIdNum = parseInt(installtaionId, 10)
+        if (isNaN(installationIdNum)) {
+            return res.status(400).json({ error: "Invalid installation ID in DB" });
+        }
+        const jwtToken = generateSecret()
+        const octokit = new Octokit({
+            auth: jwtToken
+        })
+
+        await octokit.request('DELETE /app/installations/{installation_id}', {
+            installation_id: installationIdNum,
+            headers: {
+                'X-GitHub-Api-Version': '2022-11-28'
+            }
+        })
+        return res.status(200).json({ message: "Installation deleted successfully" });
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Installation couldn't be deleted" });
+    }
+}

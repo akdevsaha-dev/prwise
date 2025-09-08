@@ -17,8 +17,9 @@ export const registerApp = async (req: Request, res: Response) => {
         if (!session) {
             return res.redirect(`${process.env.FRONTEND_URL}/signin`)
         }
-        const existingWorkspace = await prisma.githubAppInstallation.findUnique({
-            where: { workspaceId: String(workspaceId) },
+
+        const existingInstallation = await prisma.githubAppInstallation.findUnique({
+            where: { workspaceId: String(workspaceId) }
         });
 
         await prisma.githubAppInstallation.upsert({
@@ -33,13 +34,24 @@ export const registerApp = async (req: Request, res: Response) => {
                 installationId: installation_id.toString()
             }
         })
-        if (!existingWorkspace) {
+
+        // Get workspace info for redirect
+        const workspace = await prisma.workspace.findUnique({
+            where: { id: String(workspaceId) },
+            select: { name: true }
+        });
+
+        if (!workspace) {
+            return res.status(404).send("Workspace not found");
+        }
+
+        if (!existingInstallation) {
             return res.redirect(
-                `${process.env.FRONTEND_URL}/onboarding/success?workspaceId=${workspaceId}&connected=github`
+                `${process.env.FRONTEND_URL}/onboarding/success?workspaceName=${workspace.name}&workspaceId=${workspaceId}&connected=github`
             );
         } else {
             return res.redirect(
-                `${process.env.FRONTEND_URL}/dashboard/workspace/${workspaceId}?connected=github`
+                `${process.env.FRONTEND_URL}/dashboard/${workspace.name}/${workspaceId}?connected=github`
             );
         }
     }
