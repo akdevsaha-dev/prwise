@@ -46,18 +46,36 @@ model Workspace {
   ownerId               String
   owner                 User                   @relation(fields: [ownerId], references: [id])
   githubAppInstallation GithubAppInstallation?
+  PullRequest           PullRequest[]
+  pullRequestId         String?
 
+  @@unique([ownerId, name])
   @@map("workspace")
 }
 
 model GithubAppInstallation {
-  id             String @id @default(uuid())
-  installationId String @unique
+  id             String    @id @default(uuid())
+  installationId String    @unique
+  accountLogin   String    @default("unknown")
+  accountType    String    @default("User")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  workspaceId    String    @unique
+  Workspace      Workspace @relation(fields: [workspaceId], references: [id])
+}
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  workspaceId String    @unique
-  Workspace   Workspace @relation(fields: [workspaceId], references: [id])
+model PullRequest {
+  id            String    @id @default(uuid())
+  pullReqNumber Int
+  title         String
+  description   String?
+  branch        String
+  baseBranch    String
+  repoName      String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  workspaceId   String
+  workspace     Workspace @relation(fields: [workspaceId], references: [id])
 }
 
 model Session {
